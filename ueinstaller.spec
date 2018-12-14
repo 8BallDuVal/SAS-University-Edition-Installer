@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['ueinstaller.py'],
-             pathex=['path-to-folder-containing-ueinstaller.py'],
+             pathex=['path-to-folder-containing-the-files'],
              binaries=[],
              datas=[],
              hiddenimports=[],
@@ -16,7 +16,7 @@ a = Analysis(['ueinstaller.py'],
              cipher=block_cipher,
              noarchive=False)
 			 
-a.datas += [('analytics_u.gif','path-to-folder-containing-analytics_u.gif-and-ueinstaller.py\\analytics_u.gif', "DATA")]		 
+a.datas += [('analytics_u.gif','path-to-folder-containing-the-files\\analytics_u.gif', "DATA")]		 
 	
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
