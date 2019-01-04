@@ -9,7 +9,9 @@ Dependencies:
 - **Pyinstaller version 3.4.dev0+bbede2ea3 . This is only necessary if you would like to create a single-file executable.
 
 I have included two versions of the program: 
+
 -ueinstaller.py
+
 -ueinstaller_ALTERNATE.py
 
 Both of these versions perform essentially the same exact functions, however the "Alternate" version is attempting to be more like a windows installer, with separate 'pages' for each step of the install process.
