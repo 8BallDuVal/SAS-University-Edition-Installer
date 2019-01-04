@@ -19,7 +19,7 @@ class Example(Frame):
         
         ### Loading the image ###
         filelocation = __file__
-        filepath = filelocation.replace('test.py','analytics_u.gif')
+        filepath = filelocation.replace('ueinstaller_ALTERNATE.py','analytics_u.gif')
         analyticsphoto = PhotoImage(file=filepath)
         self.analytics_u_photo = Label(self, image=analyticsphoto, justify=RIGHT)
         self.analytics_u_photo.image = analyticsphoto
