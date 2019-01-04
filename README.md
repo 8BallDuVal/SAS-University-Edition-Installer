@@ -4,7 +4,7 @@ Imports SAS University Edition into Oracle VirtualBox Automatically
 This is a Graphical User Interface Application written in Python 3.6.5, using Python's included tkinter package.
 
 Dependencies: 
-- All Python packages used are included with Python 3.6.5.
+- All Python packages used in the ueinstaller.py file are included with Python 3.6.5.
 - The analytics_u.gif photo must be in the same directory as the ueinstaller.py file upon runtime.
 - **Pyinstaller version 3.4.dev0+bbede2ea3 . This is only necessary if you would like to create a single-file executable.
 
