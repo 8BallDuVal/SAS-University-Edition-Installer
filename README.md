@@ -51,7 +51,7 @@ If you would like to turn the application into a stand-alone EXE file for window
 
 Pyinstaller ueinstaller.spec
 
-(don't forget to modify the file paths in the ueinstaller.spec file, making sure each '\' has two '\\' in the folder paths. Example: 'C:\Windows\System32' should be 'C:\\Windows\\System32')
+(don't forget to modify the file paths in the ueinstaller.spec file, making sure each '\' has two '\\' in the folder paths. Example: 'C:\Windows\System32' should be 'C:\\Windows\\\\System32')
 ********************************************************************************************************************************
 
 This program was written entirely by me, and is not affiliated with SAS or SAS University Edition at this time.
