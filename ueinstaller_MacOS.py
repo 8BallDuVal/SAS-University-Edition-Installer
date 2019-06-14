@@ -82,7 +82,7 @@ class Installer(Frame, object):
         '''
         self.ova_filename = tkFileDialog.askopenfilename()
         if self.ova_filename.endswith(u'.ova'):
-            self.fifth_action_button_clicked()
+            self.fourth_action_button_clicked()
         else:
             tkMessageBox.showerror(u'Wrong Filetype', u'Please select the SAS University Edition vApp file only.'+
                                                     u' The file should end with the following three-letter extension: ".ova".'+
@@ -134,9 +134,9 @@ class Installer(Frame, object):
             self.messagelabel.bind(u"<Button-1>", self.download_UE_ova)
             self.action_button.config(text=u"Find vApp", command=self.openfile) 
         if self.ova_filename.endswith(u'.ova'):
-            self.fifth_action_button_clicked()
+            self.fourth_action_button_clicked()
 #----- Step 4: Checks for duplicate VMs in VirtualBox and 'SAS University Edition' folders in the 'VirtualBox VMs' folder. -----#  
-    def fifth_action_button_clicked(self):
+    def fourth_action_button_clicked(self):
         self.action_button.config(text= 'Check Duplicates', command=self.check_duplicates)
         self.messagelabel.config(text=u" Click the 'Continue' button to verify that you do not have any duplicate SAS\n"+
                                       u" University Edition VMs imported into Oracle VirtualBox.\n\n")
@@ -179,8 +179,8 @@ class Installer(Frame, object):
     def check_duplicates(self):
         if self.check_duplicate_vms() == True:
             if self.check_vbox_vms_folder() == True:
-                self.sixth_action_button_clicked()
-#----- Step 6: Write batch file using information collected above & run batch file to import vApp -----#   
+                self.fifth_action_button_clicked()
+#----- Step 5: Write batch file using information collected above & run batch file to import vApp -----#   
     def import_ova_file(self):
         try:
             #Imports the .ova file in the location specified using the VBoxManage CLI module 
@@ -197,11 +197,11 @@ class Installer(Frame, object):
             self.successful_import()
         except:
             tkMessageBox.showerror(u"Error",u"There was an issue importing SAS University Edition. You may need to run this file using administrator privelages.")   
-    def sixth_action_button_clicked(self):
+    def fifth_action_button_clicked(self):
         self.action_button.config(text=u'Import', command=self.import_ova_file)
         self.messagelabel.config(text=u" Click the 'Import' button to import the SAS University Edition vApp\n "+
                                       u"into Oracle VirtualBox. This may take a few moments. \n\n")
-#----- Step 7: Open Oracle VirtualBox and close the installer -----#
+#----- Step 6: Open Oracle VirtualBox and close the installer -----#
     def successful_import(self):
         self.action_button.config(text=u'Finish')
         self.action_button.config(command=self.run_button_clicked)
