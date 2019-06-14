@@ -10,7 +10,7 @@ import os
 import glob
 import subprocess
 import webbrowser
-
+import base64
 
 class UniversityEditionInstaller:
     def __init__(self, window):
