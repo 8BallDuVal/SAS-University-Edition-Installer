@@ -9,21 +9,23 @@ Dependencies:
 - **SASUniversityEditionInstaller_Windows.py and SASUniversityEditionInstaller_Windows_Simple.py are both written in Python 3.6.5** (link to download: https://www.python.org/downloads/)
 - Powershell running on a Windows Machine
 
+________________________________________________________________________________________________________________________________
 
 There are five (very similar) versions of the program: 
 - SASUniversityEditionInstaller_MacOS.py is identical to SASUniversityEditionInstaller_Windows.py
 - SASUniversityEditionInstaller_Windows_Simple.py has one static GUI window that does not change other than the buttons which are grayed out at first and become clickable as you pass the system checks.
 - SAS University Edition Installer.ps1 and SAS University Edition Installer.exe are the same program.
 
+________________________________________________________________________________________________________________________________
 
-Using SASUniversityEditionInstaller_Windows_Simple.py, SASUniversityEditionInstaller_Windows.py, or SASUniversityEditionInstaller_MacOS.py:
+To start SASUniversityEditionInstaller_Windows_Simple.py, SASUniversityEditionInstaller_Windows.py, or SASUniversityEditionInstaller_MacOS.py:
 - Windows:  
     1. Open up a command prompt window and verify that you are in the same directory as the file you are trying to run.
     2. Type one of the following command on Windows: **python SASUniversityEditionInstaller_Windows.py**, **python3 SASUniversityEditionInstaller_Windows.py**, or **python -m SASUniversityEditionInstaller_Windows.py**
     3. Make sure that you have installed Python 3 before trying to run the file, and that you have added python to your environment variables. 
 - MacOS:
     1. Type the following command on MacOS: **python SASUniversityEditionInstaller_MacOS.py**
-
+________________________________________________________________________________________________________________________________
 
 To start the SAS University Edition Install Tool.ps1
 1. To start the install tool, right-click the **SAS University Edition Install Tool.ps1** file and hit Run with PowerShell.
