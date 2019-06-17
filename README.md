@@ -35,7 +35,7 @@ To start the SAS University Edition Install Tool.ps1
 
     **Before running the command above, verify that you are in the same directory as the SAS University Edition Install Tool.ps1 file. To do this, open up a file explorer and open up the folder containing the SAS University Edition Install Tool.ps1 file. In the Explorer window's address bar, type "Powershell". A powershell window will open up at the same directory. You should then be able to run the command above successfully and start the tool**.
 
-3. Once the SAS® University Edition Install Tool starts up, follow the on-screen prompts to import SAS University Edition into Oracle VirtualBox. If there are errors, follow the instructions in the window to determine how to resolve these.
+3. Once the SAS University Edition Install Tool starts up, follow the on-screen prompts to import SAS University Edition into Oracle VirtualBox. If there are errors, follow the instructions in the window to determine how to resolve these.
 
 ********************************************************************************************************************************
 ********************************************************************************************************************************
