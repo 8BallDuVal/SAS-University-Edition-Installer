@@ -1,25 +1,22 @@
-***UPDATE 6/14/19: THIS NEEDS TO BE UPDATED FOR THE FILES I HAVE ADDED. PLEASE BE PATIENT WHILE I WORK ON THE DOCUMENTATION. THE FILES I HAVE ADDED RECENTLY ARE HOWEVER WORKING AND WILL IMPORT SAS UNIVERSITY EDITION INTO ORACLE VIRTUALBOX.***
-
-
 # SAS-University-Edition-Installer
 Imports SAS University Edition into Oracle VirtualBox Automatically
 
-This is a Graphical User Interface Application written in Python 3.6.5, using Python's included tkinter package.
+This is a Graphical User Interface Application. There are several versions written in Python, using Python's included tkinter package, there is also a GUI application written for Microsoft's Powershell.
 
 Dependencies: 
-- All Python packages used in the ueinstaller.py file are included with Python 3.6.5.
-- The analytics_u.gif photo must be in the same directory as the ueinstaller.py file upon runtime.
-- **Pyinstaller version 3.4.dev0+bbede2ea3 . This is only necessary if you would like to create a single-file executable.
+- All Python packages used are included with Python (no additional downloads required).
+- **SASUniversityEditionInstaller_MacOS.py is written in Python 2.7.1**
+- **SASUniversityEditionInstaller_Windows.py and SASUniversityEditionInstaller_Windows_Simple.py are both written in Python 3.6.5**
+- Powershell running on a Windows Machine
 
-I have included two versions of the program: 
 
--ueinstaller.py
+There are five (very similar) versions of the program: 
+- SASUniversityEditionInstaller_MacOS.py is identical to SASUniversityEditionInstaller_Windows.py
+- SASUniversityEditionInstaller_Windows_Simple.py has one static GUI window that does not change other than the buttons which are grayed out at first and become clickable as you pass the system checks.
+- SAS University Edition Installer.ps1 and SAS University Edition Installer.exe are the same program.
 
--ueinstaller_ALTERNATE.py
 
-Both of these versions perform essentially the same exact functions, however the "Alternate" version is attempting to be more like a windows installer, with separate 'pages' for each step of the install process.
-
-The ueinstaller.py program does the following:
+The SASUniversityEditionInstaller_Windows_Simple.py program does the following:
 1. Checks that your system has 64-bit Hardware Virtualization enabled. If so, it moves on to the next step.
 2. Checks that Oracle VirtualBox is installed. If so, it continues.
 3. If Oracle VirtualBox is not installed, there is a link at the top of the GUI application to the Oracle VirtualBox download page.
@@ -34,7 +31,7 @@ The ueinstaller.py program does the following:
 12. After SAS University Edition has finished importing, you can click the "run" button to open Oracle VirtualBox and quit the GUI application.
 13. If you have any issues importing SAS University Edition or setting it up beyond importing the vApp, there is a link to SAS Technical support at the bottom of the GUI application.
 
-The ueinstaller_ALTERNATE.py does the following:
+The SASUniversityEditionInstaller_Windows.py/SASUniversityEditionInstaller_MacOS.py file does the following:
 1. Checks that Oracle VirtualBox is installed.
 2. If Oracle VirtualBox is not installed, a warning message and link to the Oracle VirtualBox download page is displayed.
 3. If Oracle VirtualBox is installed, the next step checks that your system has 64-bit Hardware Virtualization enabled.
@@ -48,15 +45,20 @@ The ueinstaller_ALTERNATE.py does the following:
 11. The batch file then runs in the background. The GUI window may say "not responding", but if you run the batch file in a command prompt console you will see the progress bar increasing in percentage.
 12. After SAS University Edition has finished importing, you can click the "run" button to open Oracle VirtualBox and quit the GUI application.
 
+Using the SAS® University Edition Install Tool.ps1
+1. To start the install tool, right-click the SAS® University Edition Install Tool.ps1 file and hit Run with PowerShell.
+2. Right-Click and Run with Powershell
+3. PowerShell does not allow files downloaded from the internet to be run as a security measure. If the tool does not start, you may need to bypass your Powershell Execution Policy by using the following command**:
+    
+    PowerShell.exe -ExecutionPolicy Bypass -File .\'GUI SAS University Edition Installer'.ps1
+
+    **Before running the command above, verify that you are in the same directory as the SAS University Edition Install Tool.ps1 file. To do this, open up a file explorer and open up the folder containing the SAS University Edition Install Tool.ps1 file. In the Explorer window's address bar, type "Powershell". A powershell window will open up at the same directory. You should then be able to run the command above successfully and start the tool**.
+
+4. Once the SAS® University Edition Install Tool starts up, follow the on-screen prompts to import SAS University Edition into Oracle VirtualBox. If there are errors, follow the instructions in the window to determine how to resolve these.
 
 ********************************************************************************************************************************
-If you would like to turn the application into a stand-alone EXE file for windows, download Pyinstaller and use the included spec file. With everything in the same directory, open up a command prompt window, CD to the directory containing the files, and run the following command:
-
-Pyinstaller ueinstaller.spec
-
-(don't forget to modify the file paths in the ueinstaller.spec file, making sure each '\' has two '\\' in the folder paths. Example: 'C:\Windows\System32' should be 'C:\\\\Windows\\\\System32')
 ********************************************************************************************************************************
 
-This program was written entirely by me, and is not affiliated with SAS or SAS University Edition at this time.
+These programs were written entirely by me, and are not affiliated with SAS or SAS University Edition at this time.
 
 If you have any questions/concerns, feel free to shoot me an email at dduval6@outlook.com
