@@ -1,16 +1,12 @@
-﻿# $Username - Get Windows Username
-# $myFoldersLocation - set default myFolders location
-# $type - variable used to search for the vApp file extension ".ova" 
-# $OutputVar - running & storing the "systeminfo" command's output to verify that virtualization is enabled.
-$UserName = $env:USERPROFILE
-$Vbox_Path = $env:VBOX_MSI_INSTALL_PATH
-$type = "*.ova"
-$OutputVar = (systeminfo) | Out-String
-
 # Initialize Gui Libraries
 Add-Type -AssemblyName System.Windows.Forms
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
+#######################################################################################################
+#######################################################################################################
+###################### Loading UI Elements ############################################################
+#######################################################################################################
+#######################################################################################################
 
 # GUI elements ($Form is main window which contains Labels, Picturebox, and buttons).
 $Form                            = New-Object system.Windows.Forms.Form
@@ -49,8 +45,7 @@ $Next_btn.width                   = 100
 $Next_btn.height                  = 30
 $Next_btn.location                = New-Object System.Drawing.Point(400,300)
 $Next_btn.Font                    = 'Microsoft Sans Serif,10'
-$Form.controls.AddRange(@($Label1,$PictureBox1,$Next_btn))
-$Next_btn.Add_Click({Virtualization_Check})
+
 
 $VboxInstall_check_btn                         = New-Object system.Windows.Forms.Button
 $VboxInstall_check_btn.text                    = "Installation Check"
@@ -101,96 +96,169 @@ $Finish.height                  = 30
 $Finish.location                = New-Object System.Drawing.Point(400,300)
 $Finish.Font                    = 'Microsoft Sans Serif,10'
 
+#######################################################################################################
+#######################################################################################################
+###################### End of Loading UI Elements #####################################################
+#######################################################################################################
+#######################################################################################################
+
+
+# $Username - Get Windows Username
+# $type - variable used to search for the vApp file extension ".ova" 
+# $OutputVar - running & storing the "systeminfo" command's output to verify that virtualization is enabled.
+try{
+	$UserName = $env:UserName
+	$type = "*.ova"
+	$Form.controls.AddRange(@($Label1,$PictureBox1,$Next_btn))
+	$Next_btn.Add_Click({Virtualization_Check})
+}
+catch{
+	$gui_form_notworking = [System.Windows.Forms.MessageBox]::Show("Try starting as an administrator or contact SAS Technical Support with this issue.","GUI form, or environment variables not working. ",[System.Windows.Forms.MessageBoxButtons]::OKCancel,[System.Windows.Forms.MessageBoxIcon]::Error)
+    switch ($gui_form_notworking){
+        "OK" {}
+        "Cancel"{}
+    }
+	Write-host "Try starting as an administrator or contact SAS Technical Support with this issue."
+	Read-Host "`nPress any key to quit"
+}
 
 # Checking for Hardware Virtualization
 Function Virtualization_Check(){
+try{
+	$OutputVar = (systeminfo) | Out-String
+}
+catch{
+	$gui_form_notworking = [System.Windows.Forms.MessageBox]::Show("Try starting as an administrator or contact SAS Technical Support with this issue.","Unable to run Virtualization Check",[System.Windows.Forms.MessageBoxButtons]::OKCancel,[System.Windows.Forms.MessageBoxIcon]::Error)
+    switch ($gui_form_notworking){
+        "OK" {$Form.Controls.Remove($Next_btn)
+            $Label1.text                     = "Click 'Installation Check' to verify that you have successfully`ninstalled Oracle VirtualBox."
+            $Form.Controls.Add($VboxInstall_check_btn)
+            $VboxInstall_check_btn.Add_Click({VirtualBox_Install_Check})}
+        "Cancel"{}
+    }
+}
     if ($OutputVar -like '*Virtualization Enabled In Firmware: Yes*')
     {
-    [System.Windows.Forms.MessageBox]::Show("Virtualization has been enabled in the BIOS Menu.","Virtualization Check Successful")
-    $Form.Controls.Remove($Next_btn)
-    $Label1.text                     = "Click 'Installation Check' to verify that you have successfully`ninstalled Oracle VirtualBox."
-    $Form.Controls.Add($VboxInstall_check_btn)
-    $VboxInstall_check_btn.Add_Click({VirtualBox_Install_Check})
+    $virtualization_enabled = [System.Windows.Forms.MessageBox]::Show("Virtualization has been enabled in the BIOS Menu.","Virtualization Check Successful",[System.Windows.Forms.MessageBoxButtons]::OKCancel,[System.Windows.Forms.MessageBoxIcon]::Information)
+    switch ($virtualization_enabled){
+        "OK" {$Form.Controls.Remove($Next_btn)
+            $Label1.text                     = "Click 'Installation Check' to verify that you have successfully`ninstalled Oracle VirtualBox."
+            $Form.Controls.Add($VboxInstall_check_btn)
+            $VboxInstall_check_btn.Add_Click({VirtualBox_Install_Check})
+        }
+        "Cancel"{}
+    }
     }
     else
     {
-    [System.Windows.Forms.MessageBox]::Show("Hardware Virtualization is disabled in the BIOS Menu. To resolve this issue, you need to contact your PC manufacturer for instructions on how to enter the BIOS menu to enable Hardware Virtualization on your System. See the SAS Note on the following page for more information","Virtualization Check Unsuccessful")
-    $Form.Controls.Remove($Next_btn)
-	$LinkLabel = New-Object System.Windows.Forms.LinkLabel 
-    $LinkLabel.Location = New-Object System.Drawing.Size(30,50) 
-    $LinkLabel.Size = New-Object System.Drawing.Size(300,350) 
-    $LinkLabel.LinkColor = "BLUE" 
-    $LinkLabel.ActiveLinkColor = "RED" 
-    $LinkLabel.Text = "Disabled Hardware Virtualization SAS Note" 
-    $LinkLabel.add_Click({[system.Diagnostics.Process]::start("http://support.sas.com/kb/46/250.html")}) 
-    $Form.Controls.Add($LinkLabel)
-	$Form.Controls.Add($Finish)
-    $Finish.Add_Click({$Form.Close()})	
+    $virtualization__not_enabled = [System.Windows.Forms.MessageBox]::Show("Hardware Virtualization is disabled in the BIOS Menu. To resolve this issue, you need to contact your PC manufacturer for instructions on how to enter the BIOS menu to enable Hardware Virtualization on your System. See the SAS Note on the following page for more information","Virtualization Check Unsuccessful",[System.Windows.Forms.MessageBoxButtons]::OKCancel,[System.Windows.Forms.MessageBoxIcon]::Error)
+    switch ($virtualization__not_enabled){
+        "OK" {
+            [system.Diagnostics.Process]::start("http://support.sas.com/kb/46/250.html")
+            $Form.close()
+            # $Form.Controls.Remove($Next_btn)
+            # $LinkLabel = New-Object System.Windows.Forms.LinkLabel 
+            # $LinkLabel.Location = New-Object System.Drawing.Size(30,50) 
+            # $LinkLabel.Size = New-Object System.Drawing.Size(300,350) 
+            # $LinkLabel.LinkColor = "BLUE" 
+            # $LinkLabel.ActiveLinkColor = "RED" 
+            # $LinkLabel.Text = "Disabled Hardware Virtualization SAS Note" 
+            # $LinkLabel.add_Click({[system.Diagnostics.Process]::start("http://support.sas.com/kb/46/250.html")}) 
+            # $Form.Controls.Add($LinkLabel)
+            # $Form.Controls.Add($Finish)
+            # $Finish.Add_Click({$Form.Close()})
+        }
+        "Cancel"{}
+    }
+	
 	}
 }
 
 # Checking for VirtualBox Installation
 Function VirtualBox_Install_Check(){
-    if (Test-Path -Path "$Vbox_Path\VBoxManage.exe")
+	Try{
+		# $vbox_install_path = path to C:\Program Files\Oracle\VirtualBox\
+		$global:vbox_install_path = $env:VBOX_MSI_INSTALL_PATH
+		$global:vboxmanage_path = Join-Path $vbox_install_path VBoxManage.exe 
+	}
+	Catch{
+		$vbox_not_installed = [System.Windows.Forms.MessageBox]::Show("Oracle VirtualBox has not yet been installed on your system. Please download the Oracle VirtualBox installer by clicking on the link on the next page.","Oracle VirtualBox Installation Check failed",[System.Windows.Forms.MessageBoxButtons]::OKCancel,[System.Windows.Forms.MessageBoxIcon]::Error)
+            switch ($vbox_not_installed){
+                "OK" {
+                    [system.Diagnostics.Process]::start("https://www.virtualbox.org/wiki/Downloads")
+                    $Form.Close()
+                } 
+                "Cancel" {} 
+            }
+	}
+	
+    if (Test-Path -Path "$vbox_install_path\VBoxManage.exe")
     {
-    [System.Windows.Forms.MessageBox]::Show("Oracle VirtualBox was successfully installed on your system.","Oracle VirtualBox Installation Check")
-    $Form.Controls.Remove($VboxInstall_check_btn)
-    $Label1.text                     = "Click 'Find vApp' to check your Documents, Downloads,`nand Desktop folders for the newest SAS University Edition vApp`n(unvbasicvapp__941...ova file).
-                                       `nAlternatively, click the 'Open...' button to manually select the`nlocation of the newest SAS University Edition vApp."
-    $Form.Controls.AddRange(@($FindvApp_btn,$Open_btn))
-    $FindvApp_btn.Add_Click({SearchvApp})
-    $Open_btn.Add_Click({Check-File})
+    $vbox_installed = [System.Windows.Forms.MessageBox]::Show("Oracle VirtualBox was successfully installed on your system.","Oracle VirtualBox Installation Check",[System.Windows.Forms.MessageBoxButtons]::OKCancel,[System.Windows.Forms.MessageBoxIcon]::Information)
+    switch ($vbox_installed){
+        "OK" {
+            $Form.Controls.Remove($VboxInstall_check_btn)
+            $Label1.text                     = "Click 'Find vApp' to check your Documents, Downloads,`nand Desktop folders for the newest SAS University Edition vApp`n(unvbasicvapp__941...ova file).`nAlternatively, click the 'Open...' button to manually select the`nlocation of the newest SAS University Edition vApp."
+            $Form.Controls.AddRange(@($FindvApp_btn,$Open_btn))
+            $FindvApp_btn.Add_Click({SearchvApp})
+            $Open_btn.Add_Click({Set-File})
+        }
+        "Cancel"{}
+
     }
+}
     else
     {
-    [System.Windows.Forms.MessageBox]::Show("Oracle VirtualBox has not yet been installed on your system. Please download the Oracle VirtualBox installer by clicking on the link on the next page.","Oracle VirtualBox Installation Check")
-	$Form.Controls.Remove($VboxInstall_check_btn)
-	$LinkLabel = New-Object System.Windows.Forms.LinkLabel 
-    $LinkLabel.Location = New-Object System.Drawing.Size(30,50) 
-    $LinkLabel.Size = New-Object System.Drawing.Size(300,350) 
-    $LinkLabel.LinkColor = "BLUE" 
-    $LinkLabel.ActiveLinkColor = "RED" 
-    $LinkLabel.Text = "Oracle VirtualBox Download" 
-    $LinkLabel.add_Click({[system.Diagnostics.Process]::start("https://www.virtualbox.org/wiki/Downloads")}) 
-    $Form.Controls.Add($LinkLabel) 
-	$Form.Controls.Add($Finish)
-    $Finish.Add_Click({$Form.Close()})
+        $vbox_not_installed = [System.Windows.Forms.MessageBox]::Show("Oracle VirtualBox has not yet been installed on your system. Please download the Oracle VirtualBox installer by clicking on the link on the next page.","Oracle VirtualBox Installation Check failed",[System.Windows.Forms.MessageBoxButtons]::OKCancel,[System.Windows.Forms.MessageBoxIcon]::Error)
+            switch ($vbox_not_installed){
+                "OK" {
+                    [system.Diagnostics.Process]::start("https://www.virtualbox.org/wiki/Downloads")
+                    $Form.Close()
+                } 
+                "Cancel" {} 
+            }
+
     }
 }
 
 
 # Searching for vApp file in the Downloads, Documents, & Desktop folders
 Function SearchvApp(){
-    try{
-        $Downloads_path = "$UserName\Downloads\*"
-        $Documents_path = "$UserName\Documents\*"
-        $Desktop_path = "$UserName\Desktop\*"
+    
+        $Downloads_path = "C:\Users\$UserName\Downloads\*"
+        $Documents_path = "C:\Users\$UserName\Documents\*"
+        $Desktop_path = "C:\Users\$UserName\Desktop\*"
         $OneDrive_Location = $env:OneDrive
 
-        $global:UniversityEditionVapp = get-childitem $Downloads_path,$Desktop_path,$Documents_path,$OneDrive_Location -include $type -Recurse -Filter "*unvbasicvapp*" -Force -ErrorAction SilentlyContinue | Sort-Object -Property LastWriteTime -Descending | Select Fullname, name -First 1
+        $global:UniversityEditionVapp = get-childitem $Downloads_path,$Desktop_path,$Documents_path,$OneDrive_Location -include $type -Recurse -Filter "*unvbasicvapp*" -Force -ErrorAction SilentlyContinue | Sort-Object -Property LastWriteTime -Descending | Select-Object Fullname, name -First 1
 
         if ($UniversityEditionVapp){
-        [System.Windows.Forms.MessageBox]::Show('The filepath to your most recently downloaded SAS University Edition vApp is: '+$UniversityEditionVapp.FullName, "vApp found")
-        load-shared-folder
+            $vApp_found = [System.Windows.Forms.MessageBox]::Show('The filepath to your most recently downloaded SAS University Edition vApp is: '+$UniversityEditionVapp.FullName, "vApp found",[System.Windows.Forms.MessageBoxButtons]::OKCancel,[System.Windows.Forms.MessageBoxIcon]::Information)
+                switch ($vApp_found){
+                    "OK" {Get-sharedfolder}
+                    "Cancel"{}
+                }
         }
-    }
-    catch{
-        [System.Windows.Forms.MessageBox]::Show("The SAS University Edition vApp (unvbasicvapp__941...ova file) was not found in the Downloads, Documents, or Desktop folders. You can find it manually by clicking the 'Open...' Button. If you still need to download it, click the link on the following page.", "vApp not found on your system")
-        
-        $global:LinkLabel = New-Object System.Windows.Forms.LinkLabel 
-        $LinkLabel.Location = New-Object System.Drawing.Size(30,50) 
-        $LinkLabel.Size = New-Object System.Drawing.Size(300,350) 
-        $LinkLabel.LinkColor = "BLUE" 
-        $LinkLabel.ActiveLinkColor = "RED" 
-        $LinkLabel.Text = "SAS University Edition vApp Download" 
-        $LinkLabel.add_Click({[system.Diagnostics.Process]::start("https://support.sas.com/edownload/software/DPUNVE001_VirtualBox")}) 
-        $Form.Controls.Add($LinkLabel)     
+        else{
+            $vApp_not_found = [System.Windows.Forms.MessageBox]::Show("The SAS University Edition vApp (unvbasicvapp__941...ova file) was not found in the Downloads, Documents, or Desktop folders. You can find it manually by clicking the 'Open...' Button. If you still need to download it, click the link on the following page.", "vApp not found on your system",[System.Windows.Forms.MessageBoxButtons]::OKCancel,[System.Windows.Forms.MessageBoxIcon]::Error)
+            switch ($vApp_not_found){
+                "OK" {$global:LinkLabel = New-Object System.Windows.Forms.LinkLabel 
+                    $LinkLabel.Location = New-Object System.Drawing.Size(30,50) 
+                    $LinkLabel.Size = New-Object System.Drawing.Size(300,350) 
+                    $LinkLabel.LinkColor = "BLUE" 
+                    $LinkLabel.ActiveLinkColor = "RED" 
+                    $LinkLabel.Text = "SAS University Edition vApp Download" 
+                    $LinkLabel.add_Click({[system.Diagnostics.Process]::start("https://support.sas.com/edownload/software/DPUNVE001_VirtualBox")}) 
+                    $Form.Controls.Add($LinkLabel)}
+                "Cancel"{}
+            }
+            
+   
     }
 }
 
 # Windows File Dialog box to search for vApp
-Function Get-FileName($initialDirectory)
-{
+Function Get-FileName($initialDirectory){
 	[System.Reflection.Assembly]::LoadWithPartialName("System.windows.forms") | Out-Null
 		$OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
 		$OpenFileDialog.initialDirectory = $initialDirectory
@@ -201,40 +269,47 @@ Function Get-FileName($initialDirectory)
 
 # Verifies that the '.ova' file you've selected is the SAS University Edition vApp
 # by making sure it has 'unvbasicvapp' in the filename
-Function Check-File(){
+Function Set-File(){
 $global:UniversityEditionVapp = Get-FileName -initialdirectory ".\"
     if ($UniversityEditionVapp -like "*unvbasicvapp*"){
 		$Form.Controls.Remove($LinkLabel)
-        load-shared-folder
+        Get-sharedfolder
     }
-        else{
-        [System.Windows.Forms.MessageBox]::Show("Please choose the SAS University Edition vApp (.OVA file). Choosing another filetype, or another .OVA file may cause issues.","Wrong File Chosen")
+    else{
+        [System.Windows.Forms.MessageBox]::Show("Please choose the SAS University Edition vApp (.OVA file). Choosing another filetype, or another .OVA file may cause issues.","Wrong File Chosen",[System.Windows.Forms.MessageBoxButtons]::OKCancel,[System.Windows.Forms.MessageBoxIcon]::Error)
         }
-
 }
 
 # Loads the shared folder UI buttons and label text 
-Function load-shared-folder(){
+Function Get-sharedfolder(){
     $Form.Controls.Remove($FindvApp_btn)
     $Form.Controls.Remove($Open_btn)
     $Label1.text = "Click 'Create Folder' to automatically create a`nshared folder at the Default Location:`nC:\Users\$Username\Documents\SASUniversityEdition\myfolders
                     `nClick 'Choose...' to choose an`nexisting Shared folder."
     $Form.Controls.AddRange(@($Create_sf,$Choosefolder_btn))
-    $Create_sf.Add_Click({create-folder})
+    $Create_sf.Add_Click({Set-folder})
     $Choosefolder_btn.Add_Click({Get-FolderLocation})
 }
 
 # Automatically creates the shared folder for you if it is not already created 
-Function create-folder(){
-	$global:myFoldersLocation = "$Username\Documents\SASUniversityEdition\myfolders"
-    if (Test-Path -Path $myFoldersLocation){
-    [System.Windows.Forms.MessageBox]::Show("The default directory will not be created because it already exists. The default directory will become the shared folders location.","Default directory already exists")
-    }
-    else{
-    New-Item -Path $myFoldersLocation -ItemType Directory
-    [System.Windows.Forms.MessageBox]::Show("The default directory was created, and will be the shared folders location.","Default Directory Created")
-    }
-    load-import-stage
+Function Set-folder(){
+	$global:myFoldersLocation = "C:\Users\$Username\Documents\SASUniversityEdition\myfolders"
+        if (Test-Path -Path $myFoldersLocation){
+            $sf_alreadyexists = [System.Windows.Forms.MessageBox]::Show("The default directory will not be created because it already exists. The default directory will become the shared folders location.","Default directory already exists",[System.Windows.Forms.MessageBoxButtons]::OKCancel,[System.Windows.Forms.MessageBoxIcon]::Information)
+                switch ($sf_alreadyexists){
+                    "OK" {Get-importstage}
+                    "Cancel"{}
+                 }
+            }
+        else{
+            New-Item -Path $myFoldersLocation -ItemType Directory
+            $sf_created = [System.Windows.Forms.MessageBox]::Show("The default directory was created, and will be the shared folders location.","Default Directory Created",[System.Windows.Forms.MessageBoxButtons]::OKCancel,[System.Windows.Forms.MessageBoxIcon]::Information)
+                switch ($sf_created){
+                    "OK" {Get-importstage}
+                    "Cancel"{}
+                    }
+            }
+        
 }
 
 # Opens up a windows file dialog box that allows you to select an existing myfolders folder
@@ -246,18 +321,18 @@ Function Get-FolderLocation($initialDirectory)
     $foldername.Description = "Select a folder"
     $foldername.rootfolder = "MyComputer"
 
-    if($foldername.ShowDialog() -eq "OK" -and $foldername.SelectedPath -Match "myfolders")
-    {
-        $global:myFoldersLocation += $foldername.SelectedPath
-		load-import-stage
-    }
-    else{
-		[System.Windows.Forms.MessageBox]::Show("Please choose a 'myfolders' folder on your hard drive.","'myfolders' folder not Chosen")
-	}
+        if($foldername.ShowDialog() -eq "OK" -and $foldername.SelectedPath -Match "myfolders")
+        {
+            $global:myFoldersLocation += $foldername.SelectedPath
+            Get-importstage
+        }
+        else{
+            [System.Windows.Forms.MessageBox]::Show("Please choose a 'myfolders' folder on your hard drive.","'myfolders' folder not Chosen",[System.Windows.Forms.MessageBoxButtons]::OKCancel,[System.Windows.Forms.MessageBoxIcon]::Error)
+        }
 }
 
 # Loads the import UI button and label text
-Function load-import-stage(){
+Function Get-importstage(){
     $Form.Controls.Remove($Create_sf)
     $Form.Controls.Remove($Choosefolder_btn)
     $Label1.text = "Click 'Import' to import the SAS University Edition vApp into`nOracle VirtualBox."
@@ -272,20 +347,20 @@ Function load-import-stage(){
 # chosen filepaths.
 Function import-vApp(){
 	if($UniversityEditionVapp.Fullname){
-		cd "C:\Program Files\Oracle\VirtualBox"
-		C:\'Program Files'\Oracle\VirtualBox\VBoxManage.exe import $UniversityEditionVapp.FullName
-		C:\'Program Files'\Oracle\VirtualBox\VBoxManage.exe sharedfolder add "SAS University Edition" --name myfolders --hostpath $myFoldersLocation --automount
+		Set-Location $vbox_install_path
+		&"$vboxmanage_path" import $UniversityEditionVapp.FullName
+		&"$vboxmanage_path" sharedfolder add "SAS University Edition" --name myfolders --hostpath $myFoldersLocation --automount
 	}
 	else{
-		cd "C:\Program Files\Oracle\VirtualBox"
-		C:\'Program Files'\Oracle\VirtualBox\VBoxManage.exe import $UniversityEditionVapp
-		C:\'Program Files'\Oracle\VirtualBox\VBoxManage.exe sharedfolder add "SAS University Edition" --name myfolders --hostpath $myFoldersLocation --automount
+		Set-Location "C:\Program Files\Oracle\VirtualBox"
+		&"$vboxmanage_path" import $UniversityEditionVapp
+		&"$vboxmanage_path" sharedfolder add "SAS University Edition" --name myfolders --hostpath $myFoldersLocation --automount
 	}
-	load-finish-stage
+	Get-finishstage
 }
 
 # Loads the Finish stage UI buttons and label text
-Function load-finish-stage(){
+Function Get-finishstage(){
     $Form.Controls.Remove($Import_btn)
     $Label1.text = "Click 'Finish' to Quit the SAS University Edition Install Tool."
     $Form.Controls.Add($Finish)
