@@ -5,15 +5,14 @@ This is a Graphical User Interface Application. There are several versions writt
 
 Dependencies: 
 - Windows:
-    - Powershell 
-    - Oracle VirtualBox
-    - SAS University Edition vApp (.ova file)
-    Additional Notes:
-    - **SASUniversityEditionInstaller_Windows.py and SASUniversityEditionInstaller_Windows_Simple.py are both written in Python 3.6.5** (link to download: https://www.python.org/downloads/)
+    - Powershell, which is pre-installed
+    - Oracle VirtualBox (link: https://www.virtualbox.org/wiki/Downloads)
+    - SAS University Edition vApp (.ova file) (link to download: https://www.sas.com/en_us/software/university-edition/download-software.html#windows-download)
 
 - MacOS:
-    - None (other than Python 2.7.1, which is pre-installed on MacOS)
-    
+    - Python 2.7.1, which is pre-installed
+    - Oracle VirtualBox (link: https://www.virtualbox.org/wiki/Downloads)
+    - SAS University Edition vApp (.ova file) (link to download: https://www.sas.com/en_us/software/university-edition/download-software.html#osx-download)
 ________________________________________________________________________________________________________________________________
 ________________________________________________________________________________________________________________________________
 
